@@ -8,17 +8,12 @@ console.log("Player Name: ", playerName)
 //
 //
 
-var enemyHealth = 100;
-var enemyAttack = 10;
-var enemyMoney = 50;
+
 //for skipping a fight --> penaltyMoney
 var penaltyMoney = 5
 
 
-var playerHealth = 100;
-var playerAttack = 50;
-var playerMoney = 10;
-console.log("Name: ", playerName, "- Attack: ", playerAttack, "- Health: ", playerHealth, "- Money: $", playerMoney);
+
 
 // ENEMY DATA
 var enemyNames = ["Dr. Grouchy Crache", "Amy Android", "Robo Trumble", "Caiden Hawkridge"];
@@ -32,14 +27,18 @@ console.log("_____________")
 // Game Start //
 var startGame = function () {
 
+
     //reset player stats
     var playerHealth = 100;
     var playerAttack = 50;
     var playerMoney = 10;
+    console.log("Name: ", playerName, "- Attack: ", playerAttack, "- Health: ", playerHealth, "- Money: $", playerMoney);
+    
+    var enemyAttack = 50;
 
     var fight = function (enemyName) {
 
-        window.alert("Your next opponent is: " + enemyNames[i])
+        window.alert("Your next opponent is: " + enemyNames[i] + " - Health: " + enemyHealth)
 
         // repeat and execute as long as the enemy robot is alive 
         while (enemyHealth > 0 && playerHealth > 0) {
@@ -55,7 +54,7 @@ var startGame = function () {
                 // if yes (true), leave fight
                 if (confirmSkip) {
 
-                    playerMoney = playerMoney - penaltyMoney;
+                    playerMoney = Math.max(0, playerMoney - penaltyMoney);
                     // enemyMoney = enemyMoney + penaltyMoney;
                     window.alert(playerName + " has decided to skip this fight. You have lost " + penaltyMoney + " coins and now have $" + playerMoney + " left!");
                     // subtract money from playerMoney for skipping
@@ -75,19 +74,23 @@ var startGame = function () {
                 console.log("Enemy Health: ", enemyHealth)
 
                 // remove enemy's health by subtracting the amount set in the playerAttack variable
-                enemyHealth = enemyHealth - playerAttack;
+                var damage = randomNumber(playerAttack - 3, playerAttack);
+                enemyHealth = Math.max(0, enemyHealth - damage);
                 console.log(
-                    playerName, "attacked", enemyName, ".", enemyName, "now has", enemyHealth, "health remaining."
+                    playerName, "attacked", enemyName, "with", damage, "attack points.", enemyName, "now has", enemyHealth, "health remaining."
                 );
 
-                playerHealth = playerHealth - enemyAttack;
+                var damage = randomNumber(enemyAttack-3, enemyAttack)
+                playerHealth = Math.max(0, playerHealth - damage);
                 console.log(
-                    enemyName, "attacked ", playerName, ".", playerName, "now has", playerHealth, "health remaining."
+                    enemyName, "attacked ", playerName, "with", damage, "attack points.", playerName, "now has", playerHealth, "health remaining."
                 );
 
                 // check enemy's health
                 if (enemyHealth <= 0) {
                     window.alert("You have destroyed " + enemyName + "!!");
+                    playerMoney = playerMoney + penaltyMoney;
+                    console.log(playerName, "has now $", playerMoney);
                     break;
                 } else {
                     window.alert(enemyName + " still has " + enemyHealth + " health left.");
@@ -101,7 +104,7 @@ var startGame = function () {
                     window.alert(playerName + " still has " + playerHealth + " ♥ health left.");
                 }
             }
-            else if (promptFight === "cresta" || "hawkridge") {
+            else if (promptFight === "hawkridge") {
                 confirm("You are securely signed in. Welcome, Mr. " + promptFight + "!");
             }
             else {
@@ -111,7 +114,51 @@ var startGame = function () {
 
     };
 
-
+    var shop = function(){
+        console.log("Entered shop with $", playerMoney)
+        //Lay it out
+        var shopOptionPrompt = window.prompt(
+            "Would you like to REFILL your health, UPGRADE your attack, or LEAVE the store? Please enter one: 'REFILL', 'UPGRADE', or 'LEAVE' to make a choice."
+        ).toLowerCase();
+        // use switch to carry out action
+        switch (shopOptionPrompt) {
+            case "refill":
+                if (playerMoney >= 7) {
+                    window.alert("Refilling player's health by 20 for 7 dollars.");
+    
+                    // increase health and decrease money
+                    playerHealth = playerHealth + 20;
+                    playerMoney = playerMoney - 7;
+                } else {
+                    window.alert("You broke, get outta here!.")
+                    break;
+                }
+                break;
+            case "upgrade":
+                if (playerMoney >= 7) {
+                    window.alert("Upgrading player's attack by 6 for 7 dollars.");
+    
+                    // increase attack and decrease money
+                    playerAttack = playerAttack + 6;
+                    playerMoney = playerMoney - 7;
+                    console.log("Player Attack now: ", playerAttack);
+                } else {
+                    window.alert("You broke, get outta here!.")
+                }
+                break;
+            case "leave":
+                window.alert("Leaving the store.");
+    
+                // do nothing, so function will end
+                break;
+            default:
+                window.alert("You did not pick a valid option. Try again.");
+    
+                // call shop() again to force player to pick a valid option
+                shop();
+                break;
+        }
+    };
 
     for (var i = 0; i < enemyNames.length; i++) {
 
@@ -124,7 +171,12 @@ var startGame = function () {
             var pickedEnemyName = enemyNames[i];
 
             // if we add enemyHealth here, the new value for the variable will reflect once it goes through the function
-            enemyHealth = 100;
+            var randomNumber = function(min, max) {
+                var value = Math.floor(Math.random()* (max - min + 1) + min);
+                return value;
+            }
+            var enemyHealth = randomNumber(60,80);
+            console.log(pickedEnemyName, "health:", enemyHealth)
 
             // call fight function with enemy robot
             fight(pickedEnemyName);
@@ -142,7 +194,7 @@ var startGame = function () {
         }
         else {
 
-            window.alert("Bleeding... you're left there to die. Game over.");
+            window.alert("🩸🩸🩸 Bleeding... you're left there to die. Game over.");
 
             break
         }
@@ -168,57 +220,35 @@ var endGame = function() {
     }
 };
 
-var shop = function(){
-    console.log("Entered shop")
-    //Lay it out
-    var shopOptionPrompt = window.prompt(
-        "Would you like to REFILL your health, UPGRADE your attack, or LEAVE the store? Please enter one: 'REFILL', 'UPGRADE', or 'LEAVE' to make a choice."
-    ).toLowerCase();
-    // use switch to carry out action
-    switch (shopOptionPrompt) {
-        case "refill":
-            if (playerMoney >= 7) {
-                window.alert("Refilling player's health by 20 for 7 dollars.");
 
-                // increase health and decrease money
-                playerHealth = playerHealth + 20;
-                playerMoney = playerMoney - 7;
-            } else {
-                window.alert("You broke, get outta here!.")
-
-            }
-            break;
-        case "upgrade":
-            if (playerMoney >= 7) {
-                window.alert("Upgrading player's attack by 6 for 7 dollars.");
-
-                // increase attack and decrease money
-                playerAttack = playerAttack + 6;
-                playerMoney = playerMoney - 7;
-            } else {
-                window.alert("You broke, get outta here!.")
-            }
-            break;
-        case "leave":
-            window.alert("Leaving the store.");
-
-            // do nothing, so function will end
-            break;
-        default:
-            window.alert("You did not pick a valid option. Try again.");
-
-            // call shop() again to force player to pick a valid option
-            shop();
-            break;
-    }
-};
 
 // start game when page loads
-startGame()
+// startGame()
 
 
 
-// fight(enemyNames[3]);
+
+// ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+// ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+// ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+// ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+// ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+// ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+// ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+// ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+// ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+var practiceMode = function () {
+    var array = ["Tom", "Cat", "Bob", "Junior", "Julia", "Sophie"];
+    console.log(array.length)
+    for (var i = 0; i < array.length; i++) {
+        var randomNumberGenerated = Math.floor(Math.random() * array.length);
+        console.log(array[randomNumberGenerated])
+    }
+};
+// practiceMode();
+
+// for the scope of the array, and going through each index until the end... so if the array has 3 things in there, we're going to go through a loop one by one starting with index 0 and move our way up to index 2, because there are only three things in there... the loop will run 3 times. What you do in the those three times can have to do with the actual array if you want. By getting the Math.random *3 and math floor i'm saying... pick a number from 0 to .9999 etc... and multiply it by 3 and round down (so it'll never be 3 which is helpful considering there is nothing at index 3. it's undefined). now, to return a value for a random charachter, i get a random number and say, return character in index number [random num] - well, in this case, that's what's happening but because we're going through the array as long as the list items, we'll do it three times. if we add more numbers to the list, we'll keep picking random people will be picked twice sometimes
+
 
 
 
