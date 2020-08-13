@@ -244,8 +244,14 @@ var practiceMode = function () {
         var randomNumberGenerated = Math.floor(Math.random() * array.length);
         console.log(array[randomNumberGenerated])
     }
+    var randomFloor = Math.random()
+    console.log(randomFloor)
+    console.log(Math.floor(randomFloor * 100))
+
+    var randomNumberGenerated = Math.floor(Math.random() * array.length);
+    console.log(array[randomNumberGenerated])
 };
-// practiceMode();
+practiceMode();
 
 // for the scope of the array, and going through each index until the end... so if the array has 3 things in there, we're going to go through a loop one by one starting with index 0 and move our way up to index 2, because there are only three things in there... the loop will run 3 times. What you do in the those three times can have to do with the actual array if you want. By getting the Math.random *3 and math floor i'm saying... pick a number from 0 to .9999 etc... and multiply it by 3 and round down (so it'll never be 3 which is helpful considering there is nothing at index 3. it's undefined). now, to return a value for a random charachter, i get a random number and say, return character in index number [random num] - well, in this case, that's what's happening but because we're going through the array as long as the list items, we'll do it three times. if we add more numbers to the list, we'll keep picking random people will be picked twice sometimes
 
